@@ -1,0 +1,1 @@
+[{"metric": "bench_step_ms", "value": 280.5, "timestamp": "2026-11-09T00:00:00Z", "test_id": "bench_dspark_muon", "test_file": "scripts/benchmark.py", "git_sha": "abc1234", "branch": "main", "build_url": "", "pr_number": ""}]
