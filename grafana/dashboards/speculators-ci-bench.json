@@ -1,0 +1,1498 @@
+{
+  "uid": "speculators-ci-bench",
+  "title": "Speculators CI · Training benchmarks",
+  "description": "Training step benchmarks from tests/e2e/regression/test_training_benchmark.py",
+  "tags": [
+    "speculators-ci"
+  ],
+  "timezone": "utc",
+  "editable": true,
+  "graphTooltip": 1,
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "refresh": "",
+  "schemaVersion": 41,
+  "templating": {
+    "list": [
+      {
+        "type": "query",
+        "name": "branch",
+        "label": "Branch",
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dg3hq8oc1y8e8c"
+        },
+        "query": {
+          "queryType": "infinity",
+          "refId": "variable",
+          "infinityQuery": {
+            "refId": "variable",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dg3hq8oc1y8e8c"
+            },
+            "type": "json",
+            "source": "url",
+            "parser": "backend",
+            "format": "table",
+            "url": "https://raw.githubusercontent.com/orestis-z/speculators-metrics/metrics-data/metrics.json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "(\n\n  $short := function($t){\n    $replace($replace($replace($replace($replace($replace($t,\n      /^test_(bench_)?/, \"\"),\n      /[A-Za-z0-9_.-]+\\//, \"\"),\n      /speculators-ci-datasets:/, \"\"),\n      /-(extra_train_args|target_layer_ids|acceptance_thresholds)[0-9]+|-None/, \"\"),\n      /-hf:/, \":\"),\n      /:/, \" · \")\n  };\n  $fileLabel := function($f){\n    $replace($replace($replace($f, /^tests\\/e2e\\//, \"\"), /\\/test_/, \" / \"), /\\.py$/, \"\")\n  };\n  $rows := $map($, function($r){ (\n    $envLabel := $r.python_version\n      ? (\"py\" & $r.python_version & \" / vLLM \" & ($r.vllm_version ? $r.vllm_version : \"?\"))\n      : \"local\";\n    $testLabel := $short($r.test_id);\n    $merge([$r, {\n      \"branch\": $r.branch ? $r.branch : \"local\",\n      \"env\": $envLabel,\n      \"test\": $testLabel,\n      \"file\": $fileLabel($r.test_file),\n      \"series\": $testLabel & \" · \" & $envLabel,\n      \"part\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\"),\n      \"rank\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $lookup({\"fetch\": 1, \"fwd\": 2, \"bwd\": 3, \"clip\": 4, \"opt\": 5, \"queue\": 6, \"h2d\": 7, \"step\": 8},\n                  $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\")),\n      \"pos\": $contains($r.metric, /^acceptance_at_token_[0-9]+$/)\n        ? $replace($r.metric, /^acceptance_at_token_/, \"\"),\n      \"pr_number\": $r.pr_number ? $r.pr_number : \"\",\n      \"build_url\": $r.build_url ? $r.build_url : \"\",\n      \"hostname\": $r.hostname ? $r.hostname : \"\",\n      \"gpu_name\": $r.gpu_name ? $r.gpu_name : \"\",\n      \"node_name\": $r.node_name ? $r.node_name : \"\"\n    }])\n  )});\n  $map($distinct($rows[test_file = \"tests/e2e/regression/test_training_benchmark.py\"].branch), function($v){ {\"v\": $v} })\n)",
+            "columns": [
+              {
+                "selector": "v",
+                "text": "v",
+                "type": "string",
+                "timestampFormat": ""
+              }
+            ],
+            "filters": []
+          }
+        },
+        "refresh": 1,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": [
+            "main"
+          ],
+          "value": [
+            "main"
+          ]
+        },
+        "options": [],
+        "sort": 1,
+        "regex": "",
+        "hide": 0
+      },
+      {
+        "type": "query",
+        "name": "env",
+        "label": "Environment",
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dg3hq8oc1y8e8c"
+        },
+        "query": {
+          "queryType": "infinity",
+          "refId": "variable",
+          "infinityQuery": {
+            "refId": "variable",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dg3hq8oc1y8e8c"
+            },
+            "type": "json",
+            "source": "url",
+            "parser": "backend",
+            "format": "table",
+            "url": "https://raw.githubusercontent.com/orestis-z/speculators-metrics/metrics-data/metrics.json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "(\n\n  $short := function($t){\n    $replace($replace($replace($replace($replace($replace($t,\n      /^test_(bench_)?/, \"\"),\n      /[A-Za-z0-9_.-]+\\//, \"\"),\n      /speculators-ci-datasets:/, \"\"),\n      /-(extra_train_args|target_layer_ids|acceptance_thresholds)[0-9]+|-None/, \"\"),\n      /-hf:/, \":\"),\n      /:/, \" · \")\n  };\n  $fileLabel := function($f){\n    $replace($replace($replace($f, /^tests\\/e2e\\//, \"\"), /\\/test_/, \" / \"), /\\.py$/, \"\")\n  };\n  $rows := $map($, function($r){ (\n    $envLabel := $r.python_version\n      ? (\"py\" & $r.python_version & \" / vLLM \" & ($r.vllm_version ? $r.vllm_version : \"?\"))\n      : \"local\";\n    $testLabel := $short($r.test_id);\n    $merge([$r, {\n      \"branch\": $r.branch ? $r.branch : \"local\",\n      \"env\": $envLabel,\n      \"test\": $testLabel,\n      \"file\": $fileLabel($r.test_file),\n      \"series\": $testLabel & \" · \" & $envLabel,\n      \"part\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\"),\n      \"rank\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $lookup({\"fetch\": 1, \"fwd\": 2, \"bwd\": 3, \"clip\": 4, \"opt\": 5, \"queue\": 6, \"h2d\": 7, \"step\": 8},\n                  $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\")),\n      \"pos\": $contains($r.metric, /^acceptance_at_token_[0-9]+$/)\n        ? $replace($r.metric, /^acceptance_at_token_/, \"\"),\n      \"pr_number\": $r.pr_number ? $r.pr_number : \"\",\n      \"build_url\": $r.build_url ? $r.build_url : \"\",\n      \"hostname\": $r.hostname ? $r.hostname : \"\",\n      \"gpu_name\": $r.gpu_name ? $r.gpu_name : \"\",\n      \"node_name\": $r.node_name ? $r.node_name : \"\"\n    }])\n  )});\n  $map($distinct($rows[test_file = \"tests/e2e/regression/test_training_benchmark.py\" and branch in [${branch:doublequote}]].env), function($v){ {\"v\": $v} })\n)",
+            "columns": [
+              {
+                "selector": "v",
+                "text": "v",
+                "type": "string",
+                "timestampFormat": ""
+              }
+            ],
+            "filters": []
+          }
+        },
+        "refresh": 1,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": [
+            "py3.12 / vLLM latest"
+          ],
+          "value": [
+            "py3.12 / vLLM latest"
+          ]
+        },
+        "options": [],
+        "sort": 1,
+        "regex": "",
+        "hide": 0
+      },
+      {
+        "type": "query",
+        "name": "test",
+        "label": "Test",
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "dg3hq8oc1y8e8c"
+        },
+        "query": {
+          "queryType": "infinity",
+          "refId": "variable",
+          "infinityQuery": {
+            "refId": "variable",
+            "datasource": {
+              "type": "yesoreyeram-infinity-datasource",
+              "uid": "dg3hq8oc1y8e8c"
+            },
+            "type": "json",
+            "source": "url",
+            "parser": "backend",
+            "format": "table",
+            "url": "https://raw.githubusercontent.com/orestis-z/speculators-metrics/metrics-data/metrics.json",
+            "url_options": {
+              "method": "GET",
+              "data": ""
+            },
+            "root_selector": "(\n\n  $short := function($t){\n    $replace($replace($replace($replace($replace($replace($t,\n      /^test_(bench_)?/, \"\"),\n      /[A-Za-z0-9_.-]+\\//, \"\"),\n      /speculators-ci-datasets:/, \"\"),\n      /-(extra_train_args|target_layer_ids|acceptance_thresholds)[0-9]+|-None/, \"\"),\n      /-hf:/, \":\"),\n      /:/, \" · \")\n  };\n  $fileLabel := function($f){\n    $replace($replace($replace($f, /^tests\\/e2e\\//, \"\"), /\\/test_/, \" / \"), /\\.py$/, \"\")\n  };\n  $rows := $map($, function($r){ (\n    $envLabel := $r.python_version\n      ? (\"py\" & $r.python_version & \" / vLLM \" & ($r.vllm_version ? $r.vllm_version : \"?\"))\n      : \"local\";\n    $testLabel := $short($r.test_id);\n    $merge([$r, {\n      \"branch\": $r.branch ? $r.branch : \"local\",\n      \"env\": $envLabel,\n      \"test\": $testLabel,\n      \"file\": $fileLabel($r.test_file),\n      \"series\": $testLabel & \" · \" & $envLabel,\n      \"part\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\"),\n      \"rank\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $lookup({\"fetch\": 1, \"fwd\": 2, \"bwd\": 3, \"clip\": 4, \"opt\": 5, \"queue\": 6, \"h2d\": 7, \"step\": 8},\n                  $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\")),\n      \"pos\": $contains($r.metric, /^acceptance_at_token_[0-9]+$/)\n        ? $replace($r.metric, /^acceptance_at_token_/, \"\"),\n      \"pr_number\": $r.pr_number ? $r.pr_number : \"\",\n      \"build_url\": $r.build_url ? $r.build_url : \"\",\n      \"hostname\": $r.hostname ? $r.hostname : \"\",\n      \"gpu_name\": $r.gpu_name ? $r.gpu_name : \"\",\n      \"node_name\": $r.node_name ? $r.node_name : \"\"\n    }])\n  )});\n  $map($distinct($rows[test_file = \"tests/e2e/regression/test_training_benchmark.py\" and branch in [${branch:doublequote}] and env in [${env:doublequote}]].test), function($v){ {\"v\": $v} })\n)",
+            "columns": [
+              {
+                "selector": "v",
+                "text": "v",
+                "type": "string",
+                "timestampFormat": ""
+              }
+            ],
+            "filters": []
+          }
+        },
+        "refresh": 1,
+        "multi": true,
+        "includeAll": true,
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "options": [],
+        "sort": 1,
+        "regex": "",
+        "hide": 0
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "links": [
+    {
+      "title": "Speculators CI",
+      "type": "dashboards",
+      "tags": [
+        "speculators-ci"
+      ],
+      "asDropdown": false,
+      "includeVars": true,
+      "keepTime": true
+    }
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Step time",
+      "description": "Wall time of one optimizer step (bench_step_ms). Lower is better.",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "dg3hq8oc1y8e8c"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "dg3hq8oc1y8e8c"
+          },
+          "type": "json",
+          "source": "url",
+          "parser": "backend",
+          "format": "table",
+          "url": "https://raw.githubusercontent.com/orestis-z/speculators-metrics/metrics-data/metrics.json",
+          "url_options": {
+            "method": "GET",
+            "data": ""
+          },
+          "root_selector": "(\n\n  $short := function($t){\n    $replace($replace($replace($replace($replace($replace($t,\n      /^test_(bench_)?/, \"\"),\n      /[A-Za-z0-9_.-]+\\//, \"\"),\n      /speculators-ci-datasets:/, \"\"),\n      /-(extra_train_args|target_layer_ids|acceptance_thresholds)[0-9]+|-None/, \"\"),\n      /-hf:/, \":\"),\n      /:/, \" · \")\n  };\n  $fileLabel := function($f){\n    $replace($replace($replace($f, /^tests\\/e2e\\//, \"\"), /\\/test_/, \" / \"), /\\.py$/, \"\")\n  };\n  $rows := $map($, function($r){ (\n    $envLabel := $r.python_version\n      ? (\"py\" & $r.python_version & \" / vLLM \" & ($r.vllm_version ? $r.vllm_version : \"?\"))\n      : \"local\";\n    $testLabel := $short($r.test_id);\n    $merge([$r, {\n      \"branch\": $r.branch ? $r.branch : \"local\",\n      \"env\": $envLabel,\n      \"test\": $testLabel,\n      \"file\": $fileLabel($r.test_file),\n      \"series\": $testLabel & \" · \" & $envLabel,\n      \"part\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\"),\n      \"rank\": $contains($r.metric, /^bench_[a-z0-9]+_ms$/)\n        ? $lookup({\"fetch\": 1, \"fwd\": 2, \"bwd\": 3, \"clip\": 4, \"opt\": 5, \"queue\": 6, \"h2d\": 7, \"step\": 8},\n                  $replace($replace($r.metric, /^bench_/, \"\"), /_ms$/, \"\")),\n      \"pos\": $contains($r.metric, /^acceptance_at_token_[0-9]+$/)\n        ? $replace($r.metric, /^acceptance_at_token_/, \"\"),\n      \"pr_number\": $r.pr_number ? $r.pr_number : \"\",\n      \"build_url\": $r.build_url ? $r.build_url : \"\",\n      \"hostname\": $r.hostname ? $r.hostname : \"\",\n      \"gpu_name\": $r.gpu_name ? $r.gpu_name : \"\",\n      \"node_name\": $r.node_name ? $r.node_name : \"\"\n    }])\n  )});\n  $rows[test_file = \"tests/e2e/regression/test_training_benchmark.py\" and timestamp >= \"${__from:date:iso}\" and timestamp <= \"${__to:date:iso}\" and branch in [${branch:doublequote}] and env in [${env:doublequote}] and test in [${test:doublequote}]]\n)",
+          "columns": [
+            {
+              "selector": "timestamp",
+              "text": "Time",
+              "type": "timestamp",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "value",
+              "text": "value",
+              "type": "number",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "metric",
+              "text": "metric",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "series",
+              "text": "series",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "test",
+              "text": "test",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "env",
+              "text": "env",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "file",
+              "text": "file",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "part",
+              "text": "part",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "pos",
+              "text": "pos",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "branch",
+              "text": "branch",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "test_id",
+              "text": "test_id",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "test_file",
+              "text": "test_file",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "git_sha",
+              "text": "git_sha",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "git_sha_short",
+              "text": "git_sha_short",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "pr_number",
+              "text": "pr_number",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "build_url",
+              "text": "build_url",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "python_version",
+              "text": "python_version",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "vllm_version",
+              "text": "vllm_version",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "transformers_version",
+              "text": "transformers_version",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "gpu_name",
+              "text": "gpu_name",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "node_name",
+              "text": "node_name",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "hostname",
+              "text": "hostname",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "num_gpus",
+              "text": "num_gpus",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "total_seq_len",
+              "text": "total_seq_len",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "optimizer",
+              "text": "optimizer",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "speculator_type",
+              "text": "speculator_type",
+              "type": "string",
+              "timestampFormat": ""
+            },
+            {
+              "selector": "rank",
+              "text": "rank",
+              "type": "number",
+              "timestampFormat": ""
+            }
+          ],
+          "filters": []
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "type": "include",
+            "match": "all",
+            "filters": [
+              {
+                "fieldName": "metric",
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "bench_step_ms"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "series"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "rank": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "displayName": "${__field.labels.series}",
+          "links": [
+            {
+              "title": "Commit ${__data.fields.git_sha_short}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/commit/${__data.fields.git_sha}"
+            },
+            {
+              "title": "Buildkite build",
+              "targetBlank": true,
+              "url": "${__data.fields.build_url}"
+            },
+            {
+              "title": "PR #${__data.fields.pr_number}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/pull/${__data.fields.pr_number}"
+            }
+          ],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "always",
+            "pointSize": 5,
+            "spanNulls": true,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          },
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "sortBy": "Name",
+          "sortDesc": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Throughput (tokens/s)",
+      "description": "bench_tokens_per_s. Higher is better.",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 1,
+          "withTransforms": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "type": "include",
+            "match": "all",
+            "filters": [
+              {
+                "fieldName": "metric",
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "bench_tokens_per_s"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "series"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "rank": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.series}",
+          "links": [
+            {
+              "title": "Commit ${__data.fields.git_sha_short}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/commit/${__data.fields.git_sha}"
+            },
+            {
+              "title": "Buildkite build",
+              "targetBlank": true,
+              "url": "${__data.fields.build_url}"
+            },
+            {
+              "title": "PR #${__data.fields.pr_number}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/pull/${__data.fields.pr_number}"
+            }
+          ],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "always",
+            "pointSize": 5,
+            "spanNulls": true,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          },
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "sortBy": "Name",
+          "sortDesc": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Effective throughput (tokens/s)",
+      "description": "bench_effective_tokens_per_s.",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 9
+      },
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 1,
+          "withTransforms": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "type": "include",
+            "match": "all",
+            "filters": [
+              {
+                "fieldName": "metric",
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "bench_effective_tokens_per_s"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "series"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "rank": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.series}",
+          "links": [
+            {
+              "title": "Commit ${__data.fields.git_sha_short}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/commit/${__data.fields.git_sha}"
+            },
+            {
+              "title": "Buildkite build",
+              "targetBlank": true,
+              "url": "${__data.fields.build_url}"
+            },
+            {
+              "title": "PR #${__data.fields.pr_number}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/pull/${__data.fields.pr_number}"
+            }
+          ],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "always",
+            "pointSize": 5,
+            "spanNulls": true,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          },
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "sortBy": "Name",
+          "sortDesc": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "Peak allocated memory",
+      "description": "bench_peak_allocated_mb.",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 9
+      },
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 1,
+          "withTransforms": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "type": "include",
+            "match": "all",
+            "filters": [
+              {
+                "fieldName": "metric",
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "bench_peak_allocated_mb"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "series"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "rank": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decmbytes",
+          "displayName": "${__field.labels.series}",
+          "links": [
+            {
+              "title": "Commit ${__data.fields.git_sha_short}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/commit/${__data.fields.git_sha}"
+            },
+            {
+              "title": "Buildkite build",
+              "targetBlank": true,
+              "url": "${__data.fields.build_url}"
+            },
+            {
+              "title": "PR #${__data.fields.pr_number}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/pull/${__data.fields.pr_number}"
+            }
+          ],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "always",
+            "pointSize": 5,
+            "spanNulls": true,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          },
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "sortBy": "Name",
+          "sortDesc": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Data fetch share of step",
+      "description": "bench_fetch_frac = fetch_ms / step_ms.",
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 9
+      },
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 1,
+          "withTransforms": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "type": "include",
+            "match": "all",
+            "filters": [
+              {
+                "fieldName": "metric",
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "bench_fetch_frac"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "series"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "rank": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "displayName": "${__field.labels.series}",
+          "links": [
+            {
+              "title": "Commit ${__data.fields.git_sha_short}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/commit/${__data.fields.git_sha}"
+            },
+            {
+              "title": "Buildkite build",
+              "targetBlank": true,
+              "url": "${__data.fields.build_url}"
+            },
+            {
+              "title": "PR #${__data.fields.pr_number}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/pull/${__data.fields.pr_number}"
+            }
+          ],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "always",
+            "pointSize": 5,
+            "spanNulls": true,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          },
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "min",
+            "max"
+          ],
+          "sortBy": "Name",
+          "sortDesc": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": "row",
+      "title": "Step breakdown · $test",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "panels": [],
+      "repeat": "test"
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "$env",
+      "description": "Stacked: fetch + fwd + bwd + clip + opt ≈ step_ms. Dashed lines: queue and h2d, which are parts of fetch (not stacked).",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 19
+      },
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "panelId": 1,
+          "withTransforms": false
+        }
+      ],
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "type": "include",
+            "match": "all",
+            "filters": [
+              {
+                "fieldName": "test",
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "${test}"
+                  }
+                }
+              },
+              {
+                "fieldName": "env",
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "${env}"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "type": "include",
+            "match": "all",
+            "filters": [
+              {
+                "fieldName": "metric",
+                "config": {
+                  "id": "regex",
+                  "options": {
+                    "value": "^bench_(fetch|fwd|bwd|clip|opt|queue|h2d)_ms$"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "rank"
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "part"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "rank": true
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "displayName": "${__field.labels.part}",
+          "links": [
+            {
+              "title": "Commit ${__data.fields.git_sha_short}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/commit/${__data.fields.git_sha}"
+            },
+            {
+              "title": "Buildkite build",
+              "targetBlank": true,
+              "url": "${__data.fields.build_url}"
+            },
+            {
+              "title": "PR #${__data.fields.pr_number}",
+              "targetBlank": true,
+              "url": "https://github.com/vllm-project/speculators/pull/${__data.fields.pr_number}"
+            }
+          ],
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 40,
+            "showPoints": "always",
+            "pointSize": 5,
+            "spanNulls": true,
+            "lineInterpolation": "linear",
+            "stacking": {
+              "mode": "normal",
+              "group": "A"
+            },
+            "axisPlacement": "auto",
+            "axisSoftMin": 0
+          },
+          "color": {
+            "mode": "palette-classic-by-name"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fetch"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fwd"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "bwd"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "clip"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "opt"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "queue"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "light-purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "h2d"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "super-light-purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "queue"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "none",
+                  "group": "A"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "h2d"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "mode": "none",
+                  "group": "A"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "lastNotNull",
+            "mean"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "repeat": "env",
+      "repeatDirection": "h",
+      "maxPerRow": 3
+    },
+    {
+      "id": 8,
+      "type": "row",
+      "title": "Raw records",
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "panels": [
+        {
+          "id": 9,
+          "type": "table",
+          "title": "Raw records",
+          "gridPos": {
+            "h": 14,
+            "w": 24,
+            "x": 0,
+            "y": 30
+          },
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Dashboard --"
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "datasource",
+                "uid": "-- Dashboard --"
+              },
+              "panelId": 1,
+              "withTransforms": false
+            }
+          ],
+          "transformations": [
+            {
+              "id": "sortBy",
+              "options": {
+                "sort": [
+                  {
+                    "field": "Time",
+                    "desc": true
+                  }
+                ]
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "series": true,
+                  "part": true,
+                  "pos": true,
+                  "rank": true
+                },
+                "indexByName": {
+                  "Time": 0,
+                  "test": 1,
+                  "env": 2,
+                  "metric": 3,
+                  "value": 4,
+                  "branch": 5,
+                  "git_sha_short": 6,
+                  "pr_number": 7,
+                  "build_url": 8,
+                  "python_version": 9,
+                  "vllm_version": 10,
+                  "gpu_name": 11,
+                  "node_name": 12,
+                  "hostname": 13,
+                  "num_gpus": 14,
+                  "total_seq_len": 15,
+                  "optimizer": 16,
+                  "speculator_type": 17,
+                  "test_id": 18,
+                  "test_file": 19
+                }
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "git_sha_short"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "Commit ${__data.fields.git_sha_short}",
+                        "targetBlank": true,
+                        "url": "https://github.com/vllm-project/speculators/commit/${__data.fields.git_sha}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "build_url"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "Buildkite build",
+                        "targetBlank": true,
+                        "url": "${__data.fields.build_url}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "pr_number"
+                },
+                "properties": [
+                  {
+                    "id": "links",
+                    "value": [
+                      {
+                        "title": "PR #${__data.fields.pr_number}",
+                        "targetBlank": true,
+                        "url": "https://github.com/vllm-project/speculators/pull/${__data.fields.pr_number}"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "cellHeight": "sm"
+          }
+        }
+      ]
+    }
+  ]
+}
